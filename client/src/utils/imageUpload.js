@@ -15,8 +15,14 @@ export const checkImage = (file) => {
     return err;
 }
 
+const CLOUD_NAME = process.env.REACT_APP_CLOUD_NAME;
+const UPLOAD_PRESET = process.env.REACT_APP_UPLOAD_PRESET;
+
 export const imageUpload = async (images) => {
     let imgArr = [];
+    if(!CLOUD_NAME || !UPLOAD_PRESET){
+        throw new Error("Missing Cloudinary configuration. Set REACT_APP_CLOUD_NAME and REACT_APP_UPLOAD_PRESET.");
+    }
     for(const item of images){
         const formData = new FormData();
 
@@ -26,11 +32,10 @@ export const imageUpload = async (images) => {
             formData.append("file", item);  
         }
 
-        
-        formData.append("upload_preset", "ml_default");
-        formData.append("cloud_name", "dvt7kcj4l");
+        formData.append("upload_preset", UPLOAD_PRESET);
+        formData.append("cloud_name", CLOUD_NAME);
 
-        const res = await fetch("https://api.cloudinary.com/v1_1/dvt7kcj4l/image/upload", {
+        const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
             method: "POST",
             body: formData
         })

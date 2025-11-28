@@ -35,9 +35,15 @@ const PostThumb = ({ posts, result }) => {
         {posts && posts.map((post) => (
           <Link to={`/post/${post._id}`} key={post._id}>
             <div className="post_thumb_display">
-              {post.images[0].url.match(/video/i)
-                ? videoShow(post.images[0].url, theme)
-                : imageShow(post.images[0].url, theme)
+              {(() => {
+                const media = post.images?.[0];
+                if (!media) return null;
+                const src = typeof media === "string" ? media : media.url;
+                if (!src) return null;
+                return src.match(/video/i)
+                  ? videoShow(src, theme)
+                  : imageShow(src, theme);
+              })()
               }
 
 
